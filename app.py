@@ -7,6 +7,7 @@ from datetime import datetime
 import flask
 from flask import Flask, request, session
 from flask_sqlalchemy import SQLAlchemy
+import markdown
 import re
 import sys
 import urllib
@@ -222,6 +223,8 @@ def home():
                 QueuedPaper.priority, QueuedPaper.date_added.desc()).all()
         read_papers = ReadPaper.query.filter_by(user_id=user.id).order_by(
                 ReadPaper.date_read.desc()).all()
+        for r_paper in read_papers:
+            r_paper.note = markdown.markdown(r_paper.note)
         if 'focus' in session:
             focus = session['focus']
             focus_id = session['focus_id']
